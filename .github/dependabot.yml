@@ -1,0 +1,37 @@
+# Weekly version updates with a 14-day release cooldown, so new releases have time to be
+# pulled or yanked before they are proposed. Security updates skip the cooldown and arrive
+# grouped into one PR per ecosystem.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 14
+    groups:
+      npm-security:
+        applies-to: security-updates
+        patterns: ['*']
+      npm:
+        applies-to: version-updates
+        patterns: ['*']
+        update-types: [minor, patch]
+    commit-message:
+      prefix: deps
+
+  # Every action is pinned to a commit SHA with its version in a comment; Dependabot
+  # updates both together.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    cooldown:
+      default-days: 14
+    groups:
+      actions:
+        patterns: ['*']
+    commit-message:
+      prefix: ci

@@ -13,10 +13,7 @@ const NotFound = lazy(() => import('@/views/NotFound'));
 export function App() {
   return (
     // Vite's BASE_URL ("/RedTeamMapper/" on GitHub Pages) becomes the router basename.
-    <BrowserRouter
-      basename={import.meta.env.BASE_URL.replace(/\/$/, '')}
-      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
-    >
+    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
       <MotionConfig reducedMotion="user">
         <Routes>
           <Route element={<Layout />}>
