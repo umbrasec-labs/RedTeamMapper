@@ -31,6 +31,7 @@ export default {
         slate: '#8fa3b8', // info
         mauve: '#b48ead',
         rose: '#cf8a78',
+        brand: '#e63e2e', // logo mark only: Red Team Mapper red
       },
       fontFamily: {
         display: ['Syne', 'ui-sans-serif', 'system-ui', 'sans-serif'],

@@ -17,8 +17,8 @@ function NavContents() {
     <div className="flex h-full flex-col">
       <NavLink to="/" onClick={close} className="flex items-center gap-3 px-5 pb-5 pt-5">
         <span aria-hidden className="relative grid h-9 w-9 place-items-center rounded-xl bg-ink-750 ring-1 ring-white/10">
-          <span className="absolute inset-1.5 rounded-full border-2 border-ink-600 border-l-ember border-t-ember" />
-          <span className="h-2 w-2 rounded-full bg-ember" />
+          <span className="absolute inset-1.5 rounded-full border-2 border-ink-600 border-l-brand border-t-brand" />
+          <span className="h-2 w-2 rounded-full bg-brand" />
         </span>
         <span>
           <span className="block font-display text-[15px] font-extrabold leading-none text-fog-bright">
