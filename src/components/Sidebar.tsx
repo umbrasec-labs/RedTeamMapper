@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ExternalLink, Info, Orbit, Workflow, X } from 'lucide-react';
-import { navGroups, sectionById } from '@/data';
+import { BookOpen, ExternalLink, Info, Orbit, Workflow, X } from 'lucide-react';
+import { navGroups, sectionById, shortTitle } from '@/data';
 import { useUi } from '@/store/ui';
 
 const linkCls = ({ isActive }: { isActive: boolean }) =>
@@ -49,21 +49,28 @@ function NavContents() {
           </ul>
         </div>
 
-        {navGroups.map((g) => (
-          <div key={g.label}>
-            <div className="eyebrow mb-2 px-2.5">{g.label}</div>
-            <ul className="space-y-0.5">
-              {g.ids.map((id) => (
-                <li key={id}>
-                  <NavLink to={`/sections/${id}`} onClick={close} className={linkCls}>
-                    <span aria-hidden className="h-1 w-1 shrink-0 rounded-full bg-fog-muted group-hover:bg-ember" />
-                    {sectionById[id]?.title ?? id}
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
+        <div>
+          <div className="eyebrow mb-2 flex items-center gap-1.5 px-2.5">
+            <BookOpen aria-hidden className="h-3 w-3" /> Sections
           </div>
-        ))}
+          <div className="space-y-3">
+            {navGroups.map((g) => (
+              <div key={g.label}>
+                <div className="px-2.5 pb-1 text-2xs font-medium text-fog-muted">{g.label}</div>
+                <ul className="space-y-0.5">
+                  {g.ids.map((id) => (
+                    <li key={id}>
+                      <NavLink to={`/sections/${id}`} onClick={close} className={linkCls}>
+                        <span aria-hidden className="h-1 w-1 shrink-0 rounded-full bg-fog-muted group-hover:bg-ember" />
+                        {sectionById[id] ? shortTitle(sectionById[id].title) : id}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
       </nav>
 
       <footer className="space-y-2 border-t border-white/[0.06] px-5 py-4 text-2xs text-fog-muted">

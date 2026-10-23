@@ -6,7 +6,8 @@ import phasesRaw from './legacy/phases.json';
 
 export * from './types';
 
-const allSections = sectionsRaw as Section[];
+// The v3 page prefixed every heading with "// "; titles drop it here, once, for every view.
+const allSections = (sectionsRaw as Section[]).map((s) => ({ ...s, title: shortTitle(s.title) }));
 
 /** Content sections (everything except the 'flows' section, which backs the Flows view). */
 export const sections = allSections.filter((s) => s.id !== 'flows');
