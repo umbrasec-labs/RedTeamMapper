@@ -1,0 +1,35 @@
+# UMBRASEC gitleaks config, same rules as umbrasec.dev. Extends the default
+# secret rules with a PII rule: any email address that is not a business,
+# noreply or documentation address is a finding. Add a vendor domain here
+# deliberately if a skill needs to quote one.
+# Run with: gitleaks git --config .gitleaks.toml .
+title = "umbrasec"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "email-address"
+description = "Email address outside the allowlisted business and documentation domains"
+regex = '''[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}'''
+keywords = ["@"]
+
+[rules.allowlist]
+regexTarget = "match"
+regexes = [
+  '''@umbrasec\.(dev|com)$''',
+  '''@noreply\.codeberg\.org$''',
+  '''@users\.noreply\.github\.com$''',
+  '''@(example|domain)\.(com|org|net)$''',
+  '''\.(tld|test|example|invalid)$''',  # placeholder hosts in attack examples
+  '''^no-reply@sharepointonline\.com$''',  # Microsoft sender quoted in the SharePoint spoof technique
+]
+
+# Published malware indicators quoted verbatim so analysts can hunt for them.
+# Each entry is one exact string from a vendor or vendor-incident writeup.
+[allowlist]
+description = "Published IOCs, not secrets"
+regexTarget = "match"
+regexes = [
+  '''XWiA8gZNa7NcX2XRoAEb''',  # LiteLLM 1.107.0 stealer X-Token header (Wiz, 2026-10-21)
+]
