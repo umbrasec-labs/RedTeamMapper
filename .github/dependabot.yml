@@ -10,6 +10,11 @@ updates:
       day: monday
     cooldown:
       default-days: 14
+    # Major versions are migrations, not routine bumps (for example Vite 8, Tailwind 4), so
+    # they are done deliberately. Security updates still arrive for any version.
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
     groups:
       npm-security:
         applies-to: security-updates
