@@ -1,0 +1,96 @@
+[
+  {
+    "id": "infra",
+    "order": 1,
+    "label": "Infrastructure",
+    "short": "Infra",
+    "icon": "network",
+    "hue": "slate",
+    "sections": [
+      "recon",
+      "osint",
+      "infra",
+      "c2"
+    ]
+  },
+  {
+    "id": "access",
+    "order": 2,
+    "label": "Initial Access",
+    "short": "Access",
+    "icon": "mail",
+    "hue": "ember",
+    "sections": [
+      "access",
+      "social",
+      "motw",
+      "payload"
+    ]
+  },
+  {
+    "id": "exec",
+    "order": 3,
+    "label": "Execution",
+    "short": "Exec",
+    "icon": "cpu",
+    "hue": "gold",
+    "sections": [
+      "inject",
+      "evasion",
+      "persist"
+    ]
+  },
+  {
+    "id": "evade",
+    "order": 4,
+    "label": "Defense Evasion",
+    "short": "Evade",
+    "icon": "ghost",
+    "hue": "mauve",
+    "sections": [
+      "evasion",
+      "opsec"
+    ]
+  },
+  {
+    "id": "lateral",
+    "order": 5,
+    "label": "Privilege & Movement",
+    "short": "Lateral",
+    "icon": "git",
+    "hue": "teal",
+    "sections": [
+      "privesc",
+      "cred",
+      "lateral",
+      "ad"
+    ]
+  },
+  {
+    "id": "collect",
+    "order": 6,
+    "label": "Collection",
+    "short": "Collect",
+    "icon": "database",
+    "hue": "sage",
+    "sections": [
+      "cloud",
+      "ai",
+      "crossplatform",
+      "cracking"
+    ]
+  },
+  {
+    "id": "exfil",
+    "order": 7,
+    "label": "Exfiltration & Impact",
+    "short": "Exfil",
+    "icon": "upload",
+    "hue": "rose",
+    "sections": [
+      "exfil",
+      "cves",
+      "arsenal"
+    ]
+  }
+]

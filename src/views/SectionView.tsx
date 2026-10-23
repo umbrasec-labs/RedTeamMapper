@@ -1,30 +1,37 @@
 import { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { navGroups, sectionById, sections } from '@/data';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, Orbit } from 'lucide-react';
+import { cardSlug, phaseForSection, sectionById, sections } from '@/data';
+import { CalloutBox, CodeCard, SectionCard } from '@/components/Reference';
 import { EmptyState } from '@/components/Feedback';
 
-/**
- * Renders one reference section. The body is the v3 HTML carried across by the
- * extractor, shown inside a `.rtm` wrapper so the original cards keep their look.
- */
+/** Full reader for one reference section: callouts, a card grid, and code blocks. */
 export default function SectionView() {
   const { sectionId = '' } = useParams();
+  const [params] = useSearchParams();
+  const focusCard = params.get('card');
   const section = sectionById[sectionId];
 
   useEffect(() => {
+    if (focusCard) {
+      const t = setTimeout(
+        () => document.getElementById(`card-${focusCard}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+        100,
+      );
+      return () => clearTimeout(t);
+    }
     window.scrollTo({ top: 0 });
-  }, [sectionId]);
+  }, [focusCard, sectionId]);
 
   if (!section || section.id === 'flows') {
     return (
       <div className="mx-auto max-w-xl py-16">
         <EmptyState
-          title="Section not found"
-          hint="This section isn't on the map. Use search or pick one from the sidebar."
+          title={`No section called “${sectionId}”`}
+          hint="Pick a section from the sidebar or search for a topic."
           action={
             <Link to="/" className="btn btn-primary mt-2">
-              Back to overview
+              Back to the map
             </Link>
           }
         />
@@ -32,36 +39,59 @@ export default function SectionView() {
     );
   }
 
-  const idx = sections.findIndex((s) => s.id === section.id);
-  const prev = sections[idx - 1];
-  const next = sections[idx + 1];
-  const group = navGroups.find((g) => g.ids.includes(section.id));
+  const phase = phaseForSection(section.id);
+  const i = sections.findIndex((s) => s.id === section.id);
+  const prev = sections[i - 1];
+  const next = sections[i + 1];
 
   return (
-    <div className="mx-auto max-w-4xl">
-      <nav className="mb-4 flex items-center gap-1.5 text-xs text-fog-muted">
-        <Link to="/" className="hover:text-fog-bright">
-          Overview
-        </Link>
-        {group && (
-          <>
-            <span aria-hidden>/</span>
-            <span>{group.label}</span>
-          </>
+    <article className="mx-auto max-w-6xl">
+      <header className="mb-6 max-w-3xl">
+        <div className="eyebrow text-ember">{section.eyebrow}</div>
+        <h2 className="mt-1 font-display text-2xl font-extrabold sm:text-3xl">{section.title}</h2>
+        {section.description && (
+          <p className="mt-2 text-[13px] leading-relaxed text-fog-dim">{section.description}</p>
         )}
-        <span aria-hidden>/</span>
-        <span className="text-fog">{section.title}</span>
-      </nav>
-
-      <header className="mb-6 border-b border-white/[0.07] pb-5">
-        <h2 className="font-display text-2xl font-extrabold text-fog-bright">{section.title}</h2>
-        {section.desc && <p className="mt-2 max-w-2xl text-sm leading-relaxed text-fog">{section.desc}</p>}
+        {phase && (
+          <div className="mt-3">
+            <Link to={`/?phase=${phase.id}`} className="chip">
+              <Orbit aria-hidden className="h-3 w-3" /> {phase.label} phase
+            </Link>
+          </div>
+        )}
       </header>
 
-      {/* Content preserved from the v3 page, mechanically. */}
-      <div className="rtm" dangerouslySetInnerHTML={{ __html: section.html }} />
+      <div className="space-y-5">
+        {section.callouts.map((c, i) => (
+          <CalloutBox key={i} callout={c} />
+        ))}
 
-      <nav className="mt-10 flex items-center justify-between gap-3 border-t border-white/[0.07] pt-5">
+        {section.cards.length > 0 && (
+          <div className="grid items-start gap-3 lg:grid-cols-2">
+            {section.cards.map((card) => {
+              const slug = cardSlug(card.title);
+              return (
+                <SectionCard
+                  key={`${slug}-${focusCard === slug}`}
+                  card={card}
+                  id={`card-${slug}`}
+                  defaultOpen={focusCard === slug}
+                  highlight={focusCard === slug}
+                />
+              );
+            })}
+          </div>
+        )}
+
+        {section.code.map((block, i) => (
+          <CodeCard key={i} block={block} />
+        ))}
+      </div>
+
+      <nav
+        aria-label="Section navigation"
+        className="mt-10 flex flex-wrap justify-between gap-3 border-t border-white/[0.06] pt-5"
+      >
         {prev ? (
           <Link to={`/sections/${prev.id}`} className="btn btn-ghost">
             <ArrowLeft aria-hidden className="h-4 w-4" /> {prev.title}
@@ -75,6 +105,6 @@ export default function SectionView() {
           </Link>
         )}
       </nav>
-    </div>
+    </article>
   );
 }

@@ -1,7 +1,7 @@
 import Fuse, { type IFuseOptions } from 'fuse.js';
-import { flows, sections } from '@/data';
+import { cardSlug, flows, phaseForSection, sections } from '@/data';
 
-export type SearchKind = 'section' | 'flow' | 'step';
+export type SearchKind = 'section' | 'card' | 'flow' | 'step';
 
 export interface SearchDoc {
   id: string;
@@ -15,34 +15,38 @@ export interface SearchDoc {
 
 export const kindLabel: Record<SearchKind, string> = {
   section: 'Section',
+  card: 'Reference card',
   flow: 'Flow chain',
   step: 'Flow step',
 };
 
 /** Order result groups appear in. */
-export const kindOrder: SearchKind[] = ['section', 'flow', 'step'];
-
-/** Strip HTML to plain text for indexing section bodies. */
-function plain(htmlStr: string): string {
-  return htmlStr
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&[a-z]+;/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
+export const kindOrder: SearchKind[] = ['section', 'card', 'flow', 'step'];
 
 function buildDocs(): SearchDoc[] {
   const docs: SearchDoc[] = [];
 
   for (const s of sections) {
+    const phase = phaseForSection(s.id);
     docs.push({
       id: `section:${s.id}`,
       kind: 'section',
       title: s.title,
-      subtitle: s.desc,
-      body: plain(s.html).slice(0, 4000),
+      subtitle: s.eyebrow,
+      body: s.description,
       to: `/sections/${s.id}`,
     });
+    for (const card of s.cards) {
+      const slug = cardSlug(card.title);
+      docs.push({
+        id: `card:${s.id}:${slug}`,
+        kind: 'card',
+        title: card.title,
+        subtitle: `${s.title}${phase ? ` · ${phase.label}` : ''}`,
+        body: [card.summary, ...card.items.map((i) => `${i.lead} ${i.text}`)].join(' '),
+        to: `/sections/${s.id}?card=${slug}`,
+      });
+    }
   }
 
   for (const f of flows) {

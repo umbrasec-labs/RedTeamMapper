@@ -18,7 +18,7 @@ export function Layout() {
 
   const title = (() => {
     const p = location.pathname;
-    if (p === '/') return 'Operation Overview';
+    if (p === '/') return 'Operation Lifecycle';
     if (p.startsWith('/flows')) return 'Operation Flow Chains';
     if (p.startsWith('/about')) return 'About';
     const m = p.match(/^\/sections\/([a-z0-9-]+)/);

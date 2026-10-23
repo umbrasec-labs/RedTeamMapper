@@ -2,9 +2,9 @@ import { lazy } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { MotionConfig } from 'framer-motion';
 import { Layout } from '@/components/Layout';
-import HomeView from '@/views/HomeView';
+import RadialView from '@/views/RadialView';
 
-// The overview is the landing view and ships in the main bundle; the rest load on demand.
+// The lifecycle map is the landing view and ships in the main bundle; the rest load on demand.
 const FlowsView = lazy(() => import('@/views/FlowsView'));
 const SectionView = lazy(() => import('@/views/SectionView'));
 const AboutView = lazy(() => import('@/views/AboutView'));
@@ -17,7 +17,7 @@ export function App() {
       <MotionConfig reducedMotion="user">
         <Routes>
           <Route element={<Layout />}>
-            <Route index element={<HomeView />} />
+            <Route index element={<RadialView />} />
             <Route path="flows" element={<FlowsView />} />
             <Route path="flows/:flowId" element={<FlowsView />} />
             <Route path="sections/:sectionId" element={<SectionView />} />

@@ -4,9 +4,9 @@
 
 **An interactive map of red team / offensive security operations.**
 
-v4 rebuilds the v3 single-page reference as a navigable app: reference sections grouped by operational
-phase, end-to-end operation flow chains, and global search. The v3 content is carried across unchanged by
-a build-time extractor and rendered inside the new shell.
+v4 rebuilds the v3 single-page reference as a navigable map: a radial operation lifecycle, reference
+sections rendered as expandable card grids, end-to-end operation flow chains, and global search. The v3
+content is carried across unchanged by a build-time extractor and modelled as typed data.
 
 **Live version:** https://umbrasec-labs.github.io/RedTeamMapper/
 **Companion project:** [Blue Team Mapper](https://umbrasec-labs.github.io/BlueTeamMapper/), the defensive counterpart.
@@ -21,13 +21,13 @@ them. Use it only where you have explicit permission to test.
 
 | Route | View | What it does |
 | --- | --- | --- |
-| `/` | **Overview** | The reference sections as a grid, grouped by operational phase, plus a list of the operation flow chains. |
+| `/` · `/?phase=:id` | **Lifecycle Map** | A radial ring of the 7 operation phases (Infrastructure → Initial Access → Execution → Defense Evasion → Privilege & Movement → Collection → Exfiltration & Impact). Select a phase to open a panel listing its reference sections and related flow chains. |
+| `/sections/:id?card=` | **Section reader** | Each v3 reference section as an expandable card grid, with callouts, code blocks and prev/next navigation. Content is preserved from the original page and modelled as cards. |
 | `/flows` · `/flows/:id` | **Flow Chains** | Every end-to-end operation chain as a `node → node → node` sequence, with the transition named on each arrow. Deep-links scroll to a chain. |
-| `/sections/:id` | **Section reader** | Each v3 reference section in full, with prev/next navigation. Content (cards, callouts, tables) is preserved from the original page. |
 | `/about` | **About** | What the mapper is and the terms of use. |
 
-**Global search** (`⌘K`, `Ctrl+K` or `/`) covers sections, flow chains and individual flow steps, and jumps
-straight to the match.
+**Global search** (`⌘K`, `Ctrl+K` or `/`) covers sections, individual reference cards, flow chains and flow
+steps, and jumps straight to the match.
 
 ### Keyboard
 
@@ -35,7 +35,7 @@ straight to the match.
 | --- | --- |
 | `⌘K` / `Ctrl+K` / `/` | Open search; `↑` `↓` to move, `↵` to open |
 | `Esc` | Close search |
-| `g` then `o` `f` `a` | Go to overview, flows, about |
+| `g` then `o` `f` `a` | Go to the map, flows, about |
 
 ## Tech Stack
 
@@ -55,12 +55,13 @@ No backend, no runtime API calls, no external UI component library.
 The v3 page is kept verbatim in `legacy/index.html`. `scripts/extract_legacy.py` is a mechanical transform
 that reads it and emits:
 
-- `src/data/legacy/sections.json` - one entry per section (id, title, description, body HTML)
+- `src/data/legacy/sections.json` - one entry per section: callouts, cards (accent hue, tag, title,
+  summary, item list) and code blocks
 - `src/data/legacy/flows.json` - the operation flow chains as typed step sequences
 - `src/data/legacy/nav.json` - the sidebar groups
-- `src/styles/legacy.css` - the v3 component styles, scoped under `.rtm` so section content keeps its look
+- `src/data/legacy/phases.json` - the 7 lifecycle phases and the section ids each one covers
 
-Section bodies are rendered as sanitised HTML inside a `.rtm` wrapper. The script rewrites nothing in the
+The v3 card markup maps directly onto the card model the app renders, so the script rewrites nothing in the
 content; re-run it with `npm run extract` (needs `python3`, no third-party packages).
 
 ## Getting Started

@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ExternalLink, Info, Workflow, X } from 'lucide-react';
+import { ExternalLink, Info, Orbit, Workflow, X } from 'lucide-react';
 import { navGroups, sectionById } from '@/data';
 import { useUi } from '@/store/ui';
 
@@ -34,6 +34,12 @@ function NavContents() {
         <div>
           <div className="eyebrow mb-2 px-2.5">Map</div>
           <ul className="space-y-0.5">
+            <li>
+              <NavLink to="/" end onClick={close} className={linkCls}>
+                <Orbit aria-hidden className="h-4 w-4 shrink-0 text-fog-dim group-hover:text-ember" />
+                Lifecycle Map
+              </NavLink>
+            </li>
             <li>
               <NavLink to="/flows" onClick={close} className={linkCls}>
                 <Workflow aria-hidden className="h-4 w-4 shrink-0 text-fog-dim group-hover:text-ember" />
