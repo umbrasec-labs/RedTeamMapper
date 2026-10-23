@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
   BookOpen,
   CornerDownLeft,
+  FileText,
   GitCommitHorizontal,
   Search,
   Workflow,
@@ -14,6 +15,7 @@ import { useUi } from '@/store/ui';
 
 const kindIcon: Record<SearchKind, LucideIcon> = {
   section: BookOpen,
+  card: FileText,
   flow: Workflow,
   step: GitCommitHorizontal,
 };
