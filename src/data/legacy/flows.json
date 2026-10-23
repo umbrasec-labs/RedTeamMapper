@@ -1,0 +1,566 @@
+[
+  {
+    "id": "classic-phishing-beacon-da",
+    "title": "Classic Phishing → Beacon → DA",
+    "hue": "ember",
+    "steps": [
+      {
+        "label": "Build C2 + redirectors",
+        "hue": "slate"
+      },
+      {
+        "label": "HTML smuggle → ISO/LNK",
+        "hue": "sage"
+      },
+      {
+        "label": "Shellcode loader",
+        "hue": "ember"
+      },
+      {
+        "label": "C2 callback",
+        "hue": "mauve"
+      },
+      {
+        "label": "Domain Admin",
+        "hue": "rose"
+      }
+    ],
+    "arrows": [
+      "phish",
+      "execute",
+      "beacon",
+      "AD attack"
+    ]
+  },
+  {
+    "id": "evilginx-mfa-bypass-token-theft-cloud-access",
+    "title": "EvilGinx MFA Bypass → Token Theft → Cloud Access",
+    "hue": "sage",
+    "steps": [
+      {
+        "label": "Setup EvilGinx proxy",
+        "hue": "slate"
+      },
+      {
+        "label": "Victim enters creds + MFA",
+        "hue": "sage"
+      },
+      {
+        "label": "Session cookie stolen",
+        "hue": "gold"
+      },
+      {
+        "label": "Authenticated as user",
+        "hue": "ember"
+      },
+      {
+        "label": "M365 / Azure / On-prem",
+        "hue": "rose"
+      }
+    ],
+    "arrows": [
+      "lure email",
+      "capture",
+      "replay",
+      "pivot"
+    ]
+  },
+  {
+    "id": "loader-unhook-inject-beacon-edr-bypass-chain",
+    "title": "Loader → Unhook → Inject → Beacon (EDR Bypass Chain)",
+    "hue": "mauve",
+    "steps": [
+      {
+        "label": "Custom loader (Rust/C)",
+        "hue": "ember"
+      },
+      {
+        "label": "AMSI + ETW bypass",
+        "hue": "mauve"
+      },
+      {
+        "label": "Unhook EDR",
+        "hue": "mauve"
+      },
+      {
+        "label": "Process injection",
+        "hue": "teal"
+      },
+      {
+        "label": "Stable C2 beacon",
+        "hue": "rose"
+      }
+    ],
+    "arrows": [
+      "patch AMSI",
+      "fresh ntdll",
+      "syscall inject",
+      "sleep obf"
+    ]
+  },
+  {
+    "id": "dll-sideload-signed-binary-persistence",
+    "title": "DLL Sideload → Signed Binary → Persistence",
+    "hue": "gold",
+    "steps": [
+      {
+        "label": "Find signed EXE + DLL",
+        "hue": "slate"
+      },
+      {
+        "label": "Proxy DLL (exports)",
+        "hue": "gold"
+      },
+      {
+        "label": "Signed EXE loads our DLL",
+        "hue": "ember"
+      },
+      {
+        "label": "Registry Run key / schtask",
+        "hue": "teal"
+      },
+      {
+        "label": "Persistent C2",
+        "hue": "rose"
+      }
+    ],
+    "arrows": [
+      "craft DLL",
+      "drop pair",
+      "persist",
+      "beacon"
+    ]
+  },
+  {
+    "id": "lateral-movement-pivot-exfil",
+    "title": "Lateral Movement → Pivot → Exfil",
+    "hue": "teal",
+    "steps": [
+      {
+        "label": "Dump creds (LSASS/DPAPI)",
+        "hue": "mauve"
+      },
+      {
+        "label": "Move to high-value target",
+        "hue": "teal"
+      },
+      {
+        "label": "Deploy beacon (child)",
+        "hue": "teal"
+      },
+      {
+        "label": "Collect sensitive data",
+        "hue": "rose"
+      },
+      {
+        "label": "HTTPS C2 exfil",
+        "hue": "gold"
+      }
+    ],
+    "arrows": [
+      "PtH / PtT",
+      "SMB pipe",
+      "Snaffler",
+      "staged exfil"
+    ]
+  },
+  {
+    "id": "zip-lnk-signed-exe-dll-sideload-c2-gold-standard",
+    "title": "ZIP → LNK → Signed EXE → DLL Sideload → C2 (Gold Standard)",
+    "hue": "ember",
+    "steps": [
+      {
+        "label": "ZIP (inner dir + multi-file)",
+        "hue": "sage"
+      },
+      {
+        "label": "LNK trigger",
+        "hue": "gold"
+      },
+      {
+        "label": "Signed EXE (reputation pass)",
+        "hue": "slate"
+      },
+      {
+        "label": "Unsigned malicious DLL",
+        "hue": "ember"
+      },
+      {
+        "label": "C2 + decoy PDF opens",
+        "hue": "rose"
+      }
+    ],
+    "arrows": [
+      "user clicks",
+      "launches",
+      "sideload",
+      "beacon"
+    ]
+  },
+  {
+    "id": "search-ms-webdav-lnk-sideload-protocol-handler-a",
+    "title": "search-ms → WebDAV → LNK → Sideload (Protocol Handler Abuse)",
+    "hue": "sage",
+    "steps": [
+      {
+        "label": "Phishing email / site",
+        "hue": "sage"
+      },
+      {
+        "label": "Explorer shows WebDAV files",
+        "hue": "gold"
+      },
+      {
+        "label": "User clicks LNK",
+        "hue": "ember"
+      },
+      {
+        "label": "Signed EXE + malicious DLL",
+        "hue": "mauve"
+      },
+      {
+        "label": "C2 beacon",
+        "hue": "rose"
+      }
+    ],
+    "arrows": [
+      "search-ms: URI",
+      "appears local",
+      "sideload",
+      "callback"
+    ]
+  },
+  {
+    "id": "rdp-file-pyrdp-typelib-com-hijack-phish-to-persi",
+    "title": "RDP File → PyRDP → TypeLib COM Hijack (Phish-to-Persist)",
+    "hue": "teal",
+    "steps": [
+      {
+        "label": "Victim opens .rdp file",
+        "hue": "sage"
+      },
+      {
+        "label": "PyRDP server + auto-exec",
+        "hue": "teal"
+      },
+      {
+        "label": "Deploy DLL + BAT + SCT",
+        "hue": "gold"
+      },
+      {
+        "label": "TypeLib COM persistence",
+        "hue": "teal"
+      },
+      {
+        "label": "Persistent backdoor",
+        "hue": "rose"
+      }
+    ],
+    "arrows": [
+      "connects",
+      "enum dirs",
+      "hijack",
+      "self-clean"
+    ]
+  },
+  {
+    "id": "clickfix-clipboard-powershell-download-execute",
+    "title": "ClickFix → Clipboard PowerShell → Download → Execute",
+    "hue": "slate",
+    "steps": [
+      {
+        "label": "Fake CAPTCHA page",
+        "hue": "sage"
+      },
+      {
+        "label": "JS copies PS to clipboard",
+        "hue": "gold"
+      },
+      {
+        "label": "PowerShell download cradle",
+        "hue": "ember"
+      },
+      {
+        "label": "Stage 2 payload",
+        "hue": "mauve"
+      },
+      {
+        "label": "C2 beacon + persist",
+        "hue": "rose"
+      }
+    ],
+    "arrows": [
+      "checkbox",
+      "Win+R paste",
+      "fetch",
+      "execute"
+    ]
+  },
+  {
+    "id": "device-code-phish-token-capture-m365-cloud-later",
+    "title": "Device Code Phish → Token Capture → M365 → Cloud Lateral",
+    "hue": "teal",
+    "steps": [
+      {
+        "label": "Dynamic device code gen",
+        "hue": "slate"
+      },
+      {
+        "label": "Victim enters code + MFA",
+        "hue": "sage"
+      },
+      {
+        "label": "Access + refresh tokens",
+        "hue": "gold"
+      },
+      {
+        "label": "M365 / Azure / SharePoint",
+        "hue": "mauve"
+      },
+      {
+        "label": "App registration + passkey",
+        "hue": "rose"
+      }
+    ],
+    "arrows": [
+      "phish link",
+      "capture",
+      "enumerate",
+      "persist"
+    ]
+  },
+  {
+    "id": "wdac-policy-deploy-reboot-edr-killed-full-contro",
+    "title": "WDAC Policy Deploy → Reboot → EDR Killed → Full Control",
+    "hue": "ember",
+    "steps": [
+      {
+        "label": "Deploy custom WDAC policy",
+        "hue": "ember"
+      },
+      {
+        "label": "Policy blocks EDR drivers",
+        "hue": "gold"
+      },
+      {
+        "label": "EDR fails to start",
+        "hue": "mauve"
+      },
+      {
+        "label": "Unmonitored system",
+        "hue": "teal"
+      },
+      {
+        "label": "Full credential dump + exfil",
+        "hue": "gold"
+      }
+    ],
+    "arrows": [
+      "blocks EDR",
+      "reboot",
+      "operate",
+      "extract"
+    ]
+  },
+  {
+    "id": "adcs-esc4-template-modify-esc1-golden-cert",
+    "title": "ADCS ESC4 → Template Modify → ESC1 → Golden Cert",
+    "hue": "gold",
+    "steps": [
+      {
+        "label": "Find vulnerable ESC4 template",
+        "hue": "gold"
+      },
+      {
+        "label": "Enable SAN on template",
+        "hue": "ember"
+      },
+      {
+        "label": "Request cert as DA",
+        "hue": "mauve"
+      },
+      {
+        "label": "PKINIT TGT → DA access",
+        "hue": "teal"
+      }
+    ],
+    "arrows": [
+      "modify",
+      "wait ≤8h",
+      "auth"
+    ]
+  },
+  {
+    "id": "badsuccessor-dmsa-server-2025-domain-admin",
+    "title": "BadSuccessor (dMSA) → Server 2025 → Domain Admin",
+    "hue": "ember",
+    "steps": [
+      {
+        "label": "Find dMSA-enabled DC",
+        "hue": "sage"
+      },
+      {
+        "label": "Exploit dMSA delegation",
+        "hue": "ember"
+      },
+      {
+        "label": "Impersonate any account",
+        "hue": "mauve"
+      },
+      {
+        "label": "Domain Admin",
+        "hue": "gold"
+      }
+    ],
+    "arrows": [
+      "enum",
+      "SharpSuccessor",
+      "escalate"
+    ]
+  },
+  {
+    "id": "vsphere-snapshot-vmem-download-credential-extrac",
+    "title": "vSphere Snapshot → .vmem Download → Credential Extraction",
+    "hue": "mauve",
+    "steps": [
+      {
+        "label": "vSphere admin access",
+        "hue": "slate"
+      },
+      {
+        "label": "Download .vmem + .vmsn",
+        "hue": "sage"
+      },
+      {
+        "label": "Convert to .dmp",
+        "hue": "mauve"
+      },
+      {
+        "label": "Extract LSASS creds offline",
+        "hue": "ember"
+      }
+    ],
+    "arrows": [
+      "snapshot",
+      "vmss2core",
+      "MemProcFS"
+    ]
+  },
+  {
+    "id": "on-prem-ad-seamlesssso-silver-ticket-cloud-token",
+    "title": "On-Prem AD → SeamlessSSO → Silver Ticket → Cloud Token",
+    "hue": "ember",
+    "steps": [
+      {
+        "label": "Dump AZUREADSSOACC$ hash",
+        "hue": "teal"
+      },
+      {
+        "label": "Kerberos Silver Ticket",
+        "hue": "mauve"
+      },
+      {
+        "label": "DesktopSsoToken",
+        "hue": "gold"
+      },
+      {
+        "label": "Azure access + refresh token",
+        "hue": "slate"
+      },
+      {
+        "label": "Full Azure / M365 control",
+        "hue": "rose"
+      }
+    ],
+    "arrows": [
+      "forge",
+      "SOAP",
+      "exchange",
+      "cloud access"
+    ]
+  },
+  {
+    "id": "ntlm-reflection-smb-to-ldaps-full-domain-comprom",
+    "title": "NTLM Reflection → SMB to LDAPS → Full Domain Compromise",
+    "hue": "rose",
+    "steps": [
+      {
+        "label": "Coerce NTLM auth",
+        "hue": "sage"
+      },
+      {
+        "label": "SMB to LDAPS relay",
+        "hue": "rose"
+      },
+      {
+        "label": "Modify AD objects",
+        "hue": "ember"
+      },
+      {
+        "label": "Domain compromise",
+        "hue": "gold"
+      }
+    ],
+    "arrows": [
+      "CVE-2025-33073",
+      "bypass signing+binding",
+      "RBCD/ShadowCred"
+    ]
+  },
+  {
+    "id": "shadow-creds-coercion-ldap-relay-persistence",
+    "title": "Shadow Creds → Coercion → LDAP Relay → Persistence",
+    "hue": "teal",
+    "steps": [
+      {
+        "label": "Coerce auth (Coercer)",
+        "hue": "teal"
+      },
+      {
+        "label": "LDAP relay + msDS-KeyCredentialLink",
+        "hue": "teal"
+      },
+      {
+        "label": "keycred bypass patch",
+        "hue": "mauve"
+      },
+      {
+        "label": "Persistent access via Shadow Credentials",
+        "hue": "gold"
+      }
+    ],
+    "arrows": [
+      "relay",
+      "flags=0x02",
+      "TGT"
+    ]
+  },
+  {
+    "id": "mssql-linked-server-multi-hop-create-assembly-im",
+    "title": "MSSQL Linked Server → Multi-Hop → CREATE ASSEMBLY → Implant",
+    "hue": "teal",
+    "steps": [
+      {
+        "label": "Initial MSSQL access",
+        "hue": "sage"
+      },
+      {
+        "label": "Chain through links",
+        "hue": "teal"
+      },
+      {
+        "label": "CREATE ASSEMBLY .NET DLL",
+        "hue": "mauve"
+      },
+      {
+        "label": "C2 implant in MSSQL process",
+        "hue": "ember"
+      }
+    ],
+    "arrows": [
+      "linked server",
+      "enable CLR",
+      "execute"
+    ]
+  }
+]

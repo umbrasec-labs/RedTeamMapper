@@ -1,105 +1,116 @@
-# Red Team Mapper v3.0
+# Red Team Mapper v4
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![Theme](https://img.shields.io/badge/theme-charcoal%20%2F%20orange-F25623)
-   
 
-**Comprehensive visual reference & attack path mapper for red team, purple team, and adversary emulation operations.**
+**An interactive map of red team / offensive security operations.**
 
-A single-page, interactive red team dashboard mapping the full offensive lifecycle:
-Initial Access → Execution → Persistence → Privilege Escalation → Defense Evasion → Credential Access → Discovery → Lateral Movement → Collection → Exfiltration → Impact
+v4 rebuilds the v3 single-page reference as a navigable app: reference sections grouped by operational
+phase, end-to-end operation flow chains, and global search. The v3 content is carried across unchanged by
+a build-time extractor and rendered inside the new shell.
 
-Built as a static HTML/CSS site on a charcoal and orange palette.
+**Live version:** https://umbrasec-labs.github.io/RedTeamMapper/
+**Companion project:** [Blue Team Mapper](https://umbrasec-labs.github.io/BlueTeamMapper/), the defensive counterpart.
 
-**Live version:**  
-https://umbrasec-labs.github.io/RedTeamMapper/
+## Intended use
 
-**Companion project:**  
-[Blue Team Mapper](https://umbrasec-labs.github.io/BlueTeamMapper/) - the defensive counterpart.
+This is a planning and training reference for **authorised** red team, purple team and detection-engineering
+work. Understanding how offensive operations are structured is what lets defenders build coverage against
+them. Use it only where you have explicit permission to test.
 
-## Why This Exists
-Red vs Blue is most effective when both sides speak the same language.  
-This mapper gives red teamers, purple teamers, and adversary emulation operators a clean, visual blueprint of every major attack path - so defenders know exactly what to hunt for and how to stop it.
+## Views
 
-## Features
-- Sticky sidebar navigation with scroll-spy - jump to any phase instantly
-- 7-phase kill chain lifecycle bar (Infrastructure → Initial Access → Execution → Evasion → Lateral/Persist → Collection → Exfiltration)
-- 19 end-to-end operation flow chains (phishing → DA, MFA bypass → cloud, ADCS ESC4, BadSuccessor, device code, WDAC kill, etc.)
-- Callout boxes for critical OPSEC warnings, EDR detection layers, and high-risk actions
-- Detailed sections covering:
-  - C2 frameworks deep dive (Cobalt Strike, Havoc, Sliver, Mythic, Brute Ratel, covert channels)
-  - Red team infrastructure (redirectors, Malleable C2 profiles, IaC automation)
-  - Initial access vectors (HTML smuggling, AitM/EvilGinx, device code phishing, ClickFix, macro-less payloads)
-  - Payload development (shellcode generation, loaders, DLL sideloading, LOLBins, advanced PIC compilation)
-  - Defense evasion (AMSI/ETW bypass, direct/indirect syscalls, sleep obfuscation, unhooking, call stack spoofing, EDR-specific bypasses)
-  - Process injection (threadless injection, early cascade, module stomping, APC/thread pool)
-  - Persistence mechanisms (COM hijacking, scheduled tasks, WMI events, DLL sideload persistence)
-  - Credential access (evasive LSASS dumping, DPAPI/browser harvesting, Kerberos ticket theft, all-in-one tools)
-  - Lateral movement (SCShell, DCOM, token impersonation, C2 pivoting, Pass-the-Hash/Ticket/Certificate)
-  - Exfiltration & data staging (HTTPS C2, DNS exfil, cloud storage abuse)
-  - OPSEC (detection risk matrix, MDI/identity evasion, canary token detection, network OPSEC)
-  - Privilege escalation (BYOVD, BadSuccessor, NTLM reflection, RBCD, KrbRelayUp)
-  - Active Directory attacks (ADCS ESC1-ESC15, Shadow Credentials, DCSync, vSphere snapshot extraction)
-  - MOTW bypass & delivery (LNK chains, polyglot files, SmartScreen bypass, MSI/MST weaponization)
-  - Social engineering & vishing (CID spoofing infra, voice cloning, ClickFix/pastejacking, QR phishing, trusted platform abuse)
-  - Cloud attack operations (Azure/Entra ID, CAP bypass, AWS SSO, on-prem to cloud pivoting)
-  - Notable CVEs 2025
-  - macOS & Linux red teaming
-  - AI-assisted operations (LLM jailbreaking, AI C2, deepfakes, autonomous agents)
-  - OSINT & reconnaissance
-  - Password cracking infrastructure
-  - Full tool arsenal reference
+| Route | View | What it does |
+| --- | --- | --- |
+| `/` | **Overview** | The reference sections as a grid, grouped by operational phase, plus a list of the operation flow chains. |
+| `/flows` · `/flows/:id` | **Flow Chains** | Every end-to-end operation chain as a `node → node → node` sequence, with the transition named on each arrow. Deep-links scroll to a chain. |
+| `/sections/:id` | **Section reader** | Each v3 reference section in full, with prev/next navigation. Content (cards, callouts, tables) is preserved from the original page. |
+| `/about` | **About** | What the mapper is and the terms of use. |
 
+**Global search** (`⌘K`, `Ctrl+K` or `/`) covers sections, flow chains and individual flow steps, and jumps
+straight to the match.
+
+### Keyboard
+
+| Keys | Action |
+| --- | --- |
+| `⌘K` / `Ctrl+K` / `/` | Open search; `↑` `↓` to move, `↵` to open |
+| `Esc` | Close search |
+| `g` then `o` `f` `a` | Go to overview, flows, about |
 
 ## Tech Stack
 
--  HTML5 + CSS + JavaScript (vanilla, no frameworks)
-- Google Fonts: **Syne** (headings) + **IBM Plex Sans** (body) + **JetBrains Mono** (code/mono)
-- CSS variable design system (charcoal / orange palette)
-- IntersectionObserver API for sidebar scroll-spy
+- **Vite + React 18 + TypeScript** (strict)
+- **Tailwind CSS 3** with a custom charcoal / orange theme (`tailwind.config.js`)
+- **Framer Motion** for the search and drawer transitions (respects `prefers-reduced-motion`)
+- **Fuse.js** for client-side fuzzy search
+- **Lucide React** icons
+- **Zustand** for the little global UI state there is
+- **React Router 6** with `BrowserRouter` and a GitHub Pages 404 fallback
+- Fonts self-hosted via Fontsource: **Syne** (display), **IBM Plex Sans** (body), **JetBrains Mono** (data)
 
-## Palette (charcoal / orange)
+No backend, no runtime API calls, no external UI component library.
 
-Surfaces, text and borders are the umbrasec.dev palette. The accent
-variables keep their historical names and carry a muted eight-hue coding
-set (orange, gold, khaki, sage, teal, slate, mauve, rose) so categories and
-severities stay distinguishable on charcoal.
+## Content extraction
 
-```css
-:root {
-  --bg:           #171717;
-  --bg-card:      #222222;
-  --bg-raised:    #2a2a2a;
-  --bg-hover:     #2a2a2a;
-  --border:       #525252;
-  --border-dim:   #2a2a2a;
-  --text:         #959c95;
-  --text-bright:  #ccd0cf;
-  --text-dim:     #7d837d;
-  --text-muted:   #686c69;
-  --red:          #f25623;   /* orange: critical, primary accent */
-  --rose:         #e07a8a;   /* rose: opsec, vishing */
-  --orange:       #d9a441;   /* gold: high, access, credentials */
-  --yellow:       #d9a441;
-  --green:        #88a57d;   /* sage: low, phishing, social */
-  --cyan:         #5fb3a1;   /* teal: lateral, persistence, linux */
-  --teal:         #5fb3a1;
-  --blue:         #8fa3b8;   /* slate: infra, cloud */
-  --purple:       #b48ead;   /* mauve: c2, injection, tools */
-  --pink:         #b48ead;
-}
-/* medium severity: khaki #aeab94 */
+The v3 page is kept verbatim in `legacy/index.html`. `scripts/extract_legacy.py` is a mechanical transform
+that reads it and emits:
+
+- `src/data/legacy/sections.json` - one entry per section (id, title, description, body HTML)
+- `src/data/legacy/flows.json` - the operation flow chains as typed step sequences
+- `src/data/legacy/nav.json` - the sidebar groups
+- `src/styles/legacy.css` - the v3 component styles, scoped under `.rtm` so section content keeps its look
+
+Section bodies are rendered as sanitised HTML inside a `.rtm` wrapper. The script rewrites nothing in the
+content; re-run it with `npm run extract` (needs `python3`, no third-party packages).
+
+## Getting Started
+
+Requires Node 20+ (22 recommended).
+
+```bash
+npm install
+npm run dev        # http://localhost:5173/RedTeamMapper/
 ```
-## Changelog
 
-### v3.0
-- Added sticky sidebar navigation (260px) with grouped phase categories and IntersectionObserver scroll-spy
-- Replaced SVG kill chain architecture diagram with clean 7-phase lifecycle bar
-- Rewrote all operation flow chains as card-based layout with labeled arrows
-- Added Syne 800 as heading font; increased base font to 14px / line-height 1.75
-- Added callout boxes (danger/warn/info) for critical OPSEC warnings and EDR detection guidance
-- Extended CSS variable set with `--bg-card`, `--bg-raised`, `--bg-hover`, `--border-dim`, `--text-muted`
-- Card accent bars (2px colored top-border per phase)
-- New content: BadSuccessor, NTLM reflection CVE-2025-33073, AI-driven C2, MDI evasion, ClickFix, ClickFix vishing, QR phishing, vSphere credential extraction, Cloud CAP bypass, and more
+Other scripts:
 
-### v2.0
-- Initial public release
+```bash
+npm run typecheck  # tsc -b
+npm run build      # typecheck + production build into dist/
+npm run preview    # serve dist/ locally
+npm run extract    # re-extract v3 content into src/data/legacy/ (needs python3)
+```
+
+## Deploying to GitHub Pages
+
+The build output in `dist/` is a plain static site.
+
+### Automatic (recommended)
+
+`.github/workflows/deploy.yml` builds and deploys on every push to `main`.
+
+1. In the repository, open **Settings → Pages → Build and deployment** and set **Source** to **GitHub Actions**.
+   (v3 was served straight from the branch, so this switch is required once.)
+2. Push to `main`. The workflow runs `npm ci && npm run build` and publishes `dist/`.
+
+### Base path
+
+Vite's `base` is read from `VITE_BASE` and defaults to `/RedTeamMapper/`.
+
+| Hosting | Build command |
+| --- | --- |
+| Project site `https://<owner>.github.io/RedTeamMapper/` | `npm run build` |
+| Project site under a different repo name | `VITE_BASE=/<repo>/ npm run build` |
+| User/org site `https://<owner>.github.io/` or a custom domain | `VITE_BASE=/ npm run build` |
+
+The router's `basename` follows `import.meta.env.BASE_URL`, so nothing else needs changing.
+
+### Client-side routes on Pages
+
+GitHub Pages has no SPA rewrites, so a deep link such as `/RedTeamMapper/flows/phishing` would normally 404.
+The build emits a `404.html` (see `githubPagesSpaFallback` in `vite.config.ts`) that encodes the path into
+the query string and redirects to the app root; a small inline script in `index.html` restores the real URL.
+
+## License
+
+MIT. See [LICENSE](LICENSE).

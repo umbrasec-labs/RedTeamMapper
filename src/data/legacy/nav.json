@@ -1,0 +1,65 @@
+[
+  {
+    "label": "Foundation",
+    "ids": [
+      "recon",
+      "c2",
+      "infra"
+    ]
+  },
+  {
+    "label": "Initial Breach",
+    "ids": [
+      "access",
+      "payload",
+      "evasion"
+    ]
+  },
+  {
+    "label": "Execution",
+    "ids": [
+      "inject",
+      "persist",
+      "cred"
+    ]
+  },
+  {
+    "label": "Movement",
+    "ids": [
+      "lateral",
+      "exfil",
+      "opsec"
+    ]
+  },
+  {
+    "label": "Escalation",
+    "ids": [
+      "privesc",
+      "ad"
+    ]
+  },
+  {
+    "label": "Delivery",
+    "ids": [
+      "motw",
+      "social"
+    ]
+  },
+  {
+    "label": "Cloud & AI",
+    "ids": [
+      "cloud",
+      "cves",
+      "crossplatform",
+      "ai"
+    ]
+  },
+  {
+    "label": "Intel",
+    "ids": [
+      "osint",
+      "cracking",
+      "arsenal"
+    ]
+  }
+]

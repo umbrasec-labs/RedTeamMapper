@@ -1,0 +1,126 @@
+@import '@fontsource/syne/600.css';
+@import '@fontsource/syne/700.css';
+@import '@fontsource/syne/800.css';
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/500.css';
+@import '@fontsource/ibm-plex-sans/600.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+@import './legacy.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-ink-900 font-sans text-[14px] leading-relaxed text-fog antialiased;
+    /* Faint blueprint grid behind every view. */
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      radial-gradient(1200px 600px at 70% -10%, rgba(242, 86, 35, 0.06), transparent 60%),
+      radial-gradient(900px 500px at 0% 110%, rgba(95, 179, 161, 0.05), transparent 60%);
+    background-size:
+      32px 32px,
+      32px 32px,
+      100% 100%,
+      100% 100%;
+    background-attachment: fixed;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display text-fog-bright;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background: rgba(242, 86, 35, 0.35);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid #f25623;
+    outline-offset: 2px;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #3a3a3a transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer components {
+  .glass {
+    @apply rounded-xl border border-white/[0.07] bg-ink-800/70 backdrop-blur-md;
+  }
+
+  .eyebrow {
+    @apply font-mono text-2xs uppercase tracking-[0.14em] text-fog-muted;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-md border border-white/[0.08] bg-white/[0.03] px-2 py-0.5 font-mono text-2xs text-fog transition-colors;
+  }
+
+  a.chip,
+  button.chip {
+    @apply hover:border-ember/50 hover:text-fog-bright;
+  }
+
+  .btn {
+    @apply inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm font-medium text-fog-bright transition hover:border-ember/60 hover:bg-ember/10 active:scale-[0.98];
+  }
+
+  .btn-primary {
+    @apply border-ember/70 bg-ember/15 text-white hover:bg-ember/25;
+  }
+
+  .kbd {
+    @apply rounded border border-white/10 bg-ink-700 px-1.5 py-px font-mono text-2xs text-fog-dim;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* React Flow: match the charcoal theme. */
+.react-flow {
+  --xy-background-color: transparent;
+  --xy-edge-stroke: #525252;
+  --xy-controls-button-background-color: #1b1b1b;
+  --xy-controls-button-background-color-hover: #2a2a2a;
+  --xy-controls-button-color: #ccd0cf;
+  --xy-controls-button-border-color: #2a2a2a;
+  --xy-minimap-background-color: #141414;
+  --xy-attribution-background-color: transparent;
+}
+.react-flow__controls {
+  @apply overflow-hidden rounded-lg border border-white/10 shadow-panel;
+}
+.react-flow__attribution a {
+  color: #686c69 !important;
+}
