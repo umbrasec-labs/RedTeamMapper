@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+#
+# commit-msg hook: enforce the shared working rules (see CLAUDE.md).
+#
+# Rejects the commit if the message has:
+#   - a line starting with "Co-Authored-By:" (any case), or
+#   - an en-dash (U+2013) or em-dash (U+2014) anywhere.
+#
+# Comment lines and anything below the `git commit -v` scissors line are
+# ignored, since git strips them from the final message.
+#
+# Enable (once per clone): git config core.hooksPath .githooks
+
+set -u
+LC_ALL=C
+
+en_dash=$'\xe2\x80\x93'
+em_dash=$'\xe2\x80\x94'
+scissors='# ------------------------ >8 ------------------------'
+
+failed=0
+n=0
+while IFS= read -r line || [[ -n $line ]]; do
+    n=$((n + 1))
+    [[ $line == "$scissors"* ]] && break
+    [[ $line == '#'* ]] && continue
+    lower=${line,,}
+    if [[ $lower =~ ^[[:space:]]*co-authored-by: ]]; then
+        echo "commit-msg: line $n is a Co-Authored-By trailer; remove it" >&2
+        failed=1
+    fi
+    if [[ $line == *"$en_dash"* || $line == *"$em_dash"* ]]; then
+        echo "commit-msg: line $n contains an en-dash or em-dash; use a plain hyphen (-)" >&2
+        failed=1
+    fi
+done < "$1"
+
+if (( failed )); then
+    echo "commit-msg: commit rejected (see CLAUDE.md working rules)" >&2
+    exit 1
+fi
+exit 0
