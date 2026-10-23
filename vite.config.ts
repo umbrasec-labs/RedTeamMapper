@@ -61,6 +61,7 @@ export default defineConfig({
         manualChunks: {
           react: ['react', 'react-dom', 'react-router-dom'],
           motion: ['framer-motion'],
+          flow: ['@xyflow/react'],
         },
       },
     },

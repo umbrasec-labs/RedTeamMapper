@@ -1,10 +1,22 @@
+import { useCallback } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, Workflow } from 'lucide-react';
-import { flows, phaseById, phases, sectionById } from '@/data';
+import { flows, flowsForPhase, phaseById, phases, phaseTopics, sectionById } from '@/data';
 import { hueClass } from '@/lib/hues';
 import { icons } from '@/lib/icons';
-import { RadialMap } from '@/components/RadialMap';
+import { isTyping, useKeydown } from '@/lib/useKeyboard';
+import { RingMap } from '@/kit/RingMap';
+import { SegmentCard } from '@/kit/Cards';
+import { DetailPanel } from '@/kit/DetailPanel';
+
+const segments = phases.map((p) => ({
+  id: p.id,
+  label: p.label,
+  short: p.short,
+  subtitle: phaseTopics(p)[0],
+  icon: icons[p.icon],
+  hue: p.hue,
+}));
 
 /** Landing view: the radial operation lifecycle, with a panel for the selected phase. */
 export default function RadialView() {
@@ -12,75 +24,127 @@ export default function RadialView() {
   const activeId = params.get('phase');
   const active = activeId ? phaseById[activeId] : undefined;
 
-  const select = (id: string) => {
-    setParams(id === activeId ? {} : { phase: id }, { replace: true });
-  };
+  const show = useCallback((id: string | null) => setParams(id ? { phase: id } : {}, { replace: true }), [setParams]);
+  const select = (id: string) => show(id === activeId ? null : id);
+
+  // 1-7 pick a phase, arrows cycle; the detail panel handles Esc.
+  useKeydown(
+    (e) => {
+      if (isTyping(e.target) || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (document.querySelector('[role="dialog"]')) return;
+      const n = Number(e.key);
+      if (n >= 1 && n <= phases.length) {
+        show(phases[n - 1].id);
+        return;
+      }
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const i = phases.findIndex((p) => p.id === activeId);
+        const step = e.key === 'ArrowRight' ? 1 : -1;
+        show(phases[i < 0 ? (step > 0 ? 0 : phases.length - 1) : (i + step + phases.length) % phases.length].id);
+      }
+    },
+    [activeId, show],
+  );
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <header className="mb-6 max-w-3xl">
-        <div className="eyebrow text-ember">UMBRASEC · Red Team Mapper v4</div>
-        <h2 className="mt-1 font-display text-2xl font-extrabold leading-tight sm:text-3xl">
-          The offensive operation lifecycle, mapped end to end.
-        </h2>
-        <p className="mt-2 text-[13px] leading-relaxed text-fog-dim">
-          Seven phases, from infrastructure to impact. Select a phase to see the reference sections it covers, or jump
-          straight to the operation flow chains. A planning and training aid for authorised testing and defenders.
-        </p>
-      </header>
+    <div className="flex items-start gap-6">
+      <div className="min-w-0 flex-1">
+        <header className="mb-2 flex flex-wrap items-end justify-between gap-4">
+          <div className="max-w-3xl">
+            <div className="eyebrow text-ember">UMBRASEC · Red Team Mapper v4</div>
+            <h2 className="mt-1 font-display text-2xl font-extrabold leading-tight sm:text-3xl">
+              The offensive operation lifecycle, mapped end to end.
+            </h2>
+            <p className="mt-2 text-[13px] leading-relaxed text-fog-dim">
+              Seven phases, from infrastructure to impact. Select a phase to see the reference sections it covers, or
+              jump straight to the operation flow chains. A planning and training aid for authorised testing and
+              defenders.
+            </p>
+          </div>
+          <div className="flex gap-5 font-mono text-2xs uppercase tracking-wider text-fog-muted">
+            {(
+              [
+                ['Phases', phases.length, '/'],
+                ['Sections', Object.keys(sectionById).length - 1, '/sections/recon'],
+                ['Chains', flows.length, '/flows'],
+              ] as const
+            ).map(([label, n, to]) => (
+              <Link key={label} to={to} className="group text-right">
+                <span className="tabular block font-display text-xl font-bold normal-case tracking-normal text-fog-bright group-hover:text-ember">
+                  {n}
+                </span>
+                <span className="block">{label}</span>
+              </Link>
+            ))}
+          </div>
+        </header>
 
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <div className="glass p-4 sm:p-6">
-          <RadialMap phases={phases} activeId={activeId} onSelect={select} />
-          <div className="mt-4 flex flex-wrap justify-center gap-1.5">
-            {phases.map((p) => {
-              const c = hueClass[p.hue];
-              const on = p.id === activeId;
-              return (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => select(p.id)}
-                  className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-2xs font-medium transition ${c.text} ${c.border} ${
-                    on ? c.bg : 'hover:bg-white/[0.04]'
-                  }`}
-                >
-                  <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${c.dot}`} /> {p.label}
-                </button>
-              );
-            })}
+        <div className="flex flex-col items-center py-2">
+          <RingMap
+            segments={segments}
+            selected={activeId}
+            onSelect={select}
+            idleHub={{
+              eyebrow: 'Operation lifecycle',
+              title: `${phases.length} phases`,
+              body: 'Select a phase to see its reference sections.',
+            }}
+            ariaLabel="Operation lifecycle. Use arrow keys or number keys 1 to 7 to select a phase."
+          />
+          <div className="mt-1 hidden flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-2xs text-fog-muted md:flex">
+            <div className="flex items-center gap-2">
+              <svg width="28" height="6" aria-hidden>
+                <line x1="0" y1="3" x2="28" y2="3" stroke="#f25623" strokeWidth="2" />
+              </svg>
+              Flow to next phase
+            </div>
+            <div>
+              <kbd className="kbd">1</kbd>–<kbd className="kbd">7</kbd> select · <kbd className="kbd">←</kbd>
+              <kbd className="kbd">→</kbd> cycle · <kbd className="kbd">Esc</kbd> close
+            </div>
           </div>
         </div>
 
-        <aside className="lg:sticky lg:top-20">
-          <AnimatePresence mode="wait">
-            {active ? (
-              <motion.div
-                key={active.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.2 }}
-                className="glass p-5"
-              >
-                <PhasePanel id={active.id} />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="placeholder"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="glass p-5 text-sm text-fog-dim"
-              >
-                <p>Select a phase on the map to see its reference sections.</p>
-                <Link to="/flows" className="btn btn-primary mt-4">
-                  <Workflow aria-hidden className="h-4 w-4" /> Operation flow chains
-                </Link>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </aside>
+        <section aria-label="All phases" className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-7">
+          {phases.map((p) => (
+            <SegmentCard
+              key={p.id}
+              icon={icons[p.icon]}
+              hue={p.hue}
+              order={p.order}
+              title={p.label}
+              subtitle={phaseTopics(p).join(' · ')}
+              active={p.id === activeId}
+              onSelect={() => select(p.id)}
+            />
+          ))}
+          <Link
+            to="/flows"
+            className="glass group flex flex-col justify-between gap-3 p-4 transition hover:border-ember/40 sm:col-span-2 xl:col-span-1 2xl:col-span-7 2xl:flex-row 2xl:items-center"
+          >
+            <span className="flex items-center gap-3">
+              <Workflow aria-hidden className="h-5 w-5 text-ember" />
+              <span>
+                <span className="block font-display font-bold text-fog-bright">Operation flow chains</span>
+                <span className="block text-xs text-fog-dim">{flows.length} end-to-end chains across the lifecycle.</span>
+              </span>
+            </span>
+            <span className="flex items-center gap-1 text-sm text-ember">
+              Open flow chains <ArrowRight aria-hidden className="h-4 w-4 transition group-hover:translate-x-0.5" />
+            </span>
+          </Link>
+        </section>
       </div>
+
+      <DetailPanel
+        open={!!active}
+        onClose={() => show(null)}
+        label={active ? `${active.label} phase details` : 'Phase details'}
+        contentKey={active?.id ?? 'none'}
+      >
+        {active && <PhasePanel id={active.id} />}
+      </DetailPanel>
     </div>
   );
 }
@@ -89,7 +153,7 @@ function PhasePanel({ id }: { id: string }) {
   const phase = phaseById[id];
   const c = hueClass[phase.hue];
   const Icon = icons[phase.icon];
-  const related = flows.filter((f) => f.hue === phase.hue).slice(0, 4);
+  const related = flowsForPhase(phase).slice(0, 6);
   return (
     <div>
       <div className="flex items-center gap-3">
@@ -97,7 +161,9 @@ function PhasePanel({ id }: { id: string }) {
           <Icon className="h-5 w-5" />
         </span>
         <div>
-          <div className="eyebrow text-fog-muted">Phase {phase.order}</div>
+          <div className={`font-mono text-2xs uppercase tracking-[0.16em] ${c.text}`}>
+            Phase {String(phase.order).padStart(2, '0')} of {String(phases.length).padStart(2, '0')}
+          </div>
           <h3 className="font-display text-lg font-bold text-fog-bright">{phase.label}</h3>
         </div>
       </div>
