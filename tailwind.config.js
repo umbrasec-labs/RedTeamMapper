@@ -34,7 +34,7 @@ export default {
         brand: '#e63e2e', // logo mark only: Red Team Mapper red
       },
       fontFamily: {
-        display: ['Syne', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['"Inter Tight"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         sans: ['"IBM Plex Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
