@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
+import { BLUE_TEAM_MAPPER_URL } from '@/lib/links';
 import { flows, navGroups } from '@/data';
 
 export default function AboutView() {
@@ -32,7 +33,7 @@ export default function AboutView() {
           Explore flow chains
         </Link>
         <a
-          href="https://umbrasec-labs.github.io/BlueTeamMapper/"
+          href={BLUE_TEAM_MAPPER_URL}
           target="_blank"
           rel="noreferrer"
           className="btn btn-ghost"

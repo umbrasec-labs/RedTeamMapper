@@ -12,7 +12,7 @@ const base = process.env.VITE_BASE ?? '/RedTeamMapper/';
 /**
  * GitHub Pages has no SPA rewrites, so a deep link like /RedTeamMapper/flows/phishing
  * hits a 404. This emits a 404.html that encodes the path into the query string and
- * redirects to the app root; a small script in index.html restores the real URL.
+ * redirects to the app root; public/spa-restore.js, loaded by index.html, restores the real URL.
  * (Technique from rafgraph/spa-github-pages.)
  */
 function githubPagesSpaFallback(): Plugin {
@@ -47,9 +47,38 @@ function githubPagesSpaFallback(): Plugin {
   };
 }
 
+/**
+ * Content-Security-Policy for the built app. GitHub Pages cannot send response headers, so it
+ * goes in a meta tag, which cannot carry frame-ancestors or a report-uri. Everything the app
+ * loads is its own: bundled JS and CSS, self-hosted fonts (small ones inlined as data:
+ * URLs by Vite), no network requests. Build only,
+ * because the dev server needs inline scripts for React refresh.
+ */
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self'",
+  "style-src 'self'",
+  "img-src 'self' data:",
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'none'",
+].join('; ');
+
+function contentSecurityPolicy(): Plugin {
+  return {
+    name: 'content-security-policy',
+    apply: 'build',
+    transformIndexHtml() {
+      return [{ tag: 'meta', attrs: { 'http-equiv': 'Content-Security-Policy', content: CSP }, injectTo: 'head-prepend' }];
+    },
+  };
+}
+
 export default defineConfig({
   base,
-  plugins: [react(), githubPagesSpaFallback()],
+  plugins: [react(), githubPagesSpaFallback(), contentSecurityPolicy()],
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },

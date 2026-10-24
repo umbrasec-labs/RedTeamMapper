@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { BookOpen, ExternalLink, Info, Orbit, Workflow, X } from 'lucide-react';
 import { navGroups, sectionById, shortTitle } from '@/data';
 import { useUi } from '@/store/ui';
+import { BLUE_TEAM_MAPPER_URL } from '@/lib/links';
 
 const linkCls = ({ isActive }: { isActive: boolean }) =>
   `group relative flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-[13px] transition ${
@@ -78,7 +79,7 @@ function NavContents() {
           <Info aria-hidden className="h-3 w-3" /> About this mapper
         </NavLink>
         <a
-          href="https://umbrasec-labs.github.io/BlueTeamMapper/"
+          href={BLUE_TEAM_MAPPER_URL}
           target="_blank"
           rel="noreferrer"
           className="flex items-center gap-1.5 hover:text-fog-bright"
