@@ -9,11 +9,15 @@ import { RingMap } from '@/kit/RingMap';
 import { SegmentCard } from '@/kit/Cards';
 import { DetailPanel } from '@/kit/DetailPanel';
 
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
+const phaseSummary = (sections: number, chains: number) =>
+  chains ? `${plural(sections, 'section')} · ${plural(chains, 'flow chain')}` : plural(sections, 'section');
+
 const segments = phases.map((p) => ({
   id: p.id,
   label: p.label,
   short: p.short,
-  subtitle: phaseTopics(p)[0],
+  subtitle: phaseSummary(p.sections.length, flowsForPhase(p).length),
   icon: icons[p.icon],
   hue: p.hue,
 }));

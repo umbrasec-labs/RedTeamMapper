@@ -40,6 +40,14 @@ type StepNodeData = {
 type StepNode = Node<StepNodeData, 'step'>;
 
 const NODE_W = 220;
+/** Edge label glyph width: JetBrains Mono at 11px. */
+const LABEL_CHAR_W = 6.8;
+
+/** Gap between columns, wide enough that the longest edge label still leaves its line and arrowhead visible. */
+function columnGap(edges: { label?: string }[]) {
+  const longest = Math.max(0, ...edges.map((e) => e.label?.length ?? 0));
+  return Math.min(220, Math.max(64, Math.round(longest * LABEL_CHAR_W + 60)));
+}
 
 /** Every node exposes a source and target handle on each side; edges pick the sides. */
 const handles: [string, Position][] = [
@@ -102,7 +110,10 @@ function Graph({ steps, graphKey, selectedStep, onSelectStep }: Props) {
 
   const { nodes, edges } = useMemo(() => {
     const rawEdges = stepEdges(steps);
-    const positioned = layoutSteps(steps, rawEdges);
+    // Only side-by-side edges need room for their label; vertical ones already have the row gap.
+    const rowOf = new Map(layoutSteps(steps, rawEdges).map((p) => [p.step.id, p.y]));
+    const sideBySide = rawEdges.filter((e) => rowOf.get(e.source) === rowOf.get(e.target));
+    const positioned = layoutSteps(steps, rawEdges, { dx: NODE_W + columnGap(sideBySide) });
     const posById = Object.fromEntries(positioned.map((p) => [p.step.id, p]));
     const neighbours = new Set<string>();
     for (const e of rawEdges) {
