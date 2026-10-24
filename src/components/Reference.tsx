@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { AlertTriangle, Check, ChevronDown, Copy, Info, ShieldAlert, Sparkles } from 'lucide-react';
 import type { Callout, CodeBlock, SectionCard as Card } from '@/data/types';
 import { calloutHue, hueClass } from '@/lib/hues';
+import { alignComments } from '@/lib/alignComments';
 import { RichText } from './RichText';
 
 export const SectionCard = forwardRef<
@@ -91,9 +92,11 @@ export function CalloutBox({ callout }: { callout: Callout }) {
 
 export function CodeCard({ block }: { block: CodeBlock }) {
   const [copied, setCopied] = useState(false);
+  // Reference text, not runnable code, so the copy matches what is shown.
+  const text = alignComments(block.text);
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(block.text);
+      await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
@@ -110,7 +113,7 @@ export function CodeCard({ block }: { block: CodeBlock }) {
         </button>
       </figcaption>
       <pre className="overflow-x-auto bg-ink-950/60 p-4 font-mono text-xs leading-relaxed text-teal">
-        <code>{block.text}</code>
+        <code>{text}</code>
       </pre>
     </figure>
   );

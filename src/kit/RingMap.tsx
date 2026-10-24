@@ -8,7 +8,7 @@ export interface RingSegment {
   label: string;
   /** Very short label drawn on the ring. */
   short: string;
-  /** One line under the short label, and the hub text when focused. */
+  /** Hub body line when focused. The full label only appears in the hub, never on the ring. */
   subtitle?: string;
   icon: LucideIcon;
   hue: KitHue;
@@ -121,7 +121,7 @@ export function RingMap({ segments, links, selected, onSelect, idleHub, focusHub
     ? (focusHub?.(focusSeg, focusIndex) ?? {
         eyebrow: `Phase ${pad2(focusIndex + 1)} / ${pad2(segments.length)}`,
         title: focusSeg.label,
-        body: focusSeg.subtitle,
+        body: focusSeg.subtitle !== focusSeg.label ? focusSeg.subtitle : undefined,
       })
     : idleHub;
   const hubColor = focusSeg ? kitHex[focusSeg.hue] : kitHex.ember;
@@ -247,6 +247,7 @@ export function RingMap({ segments, links, selected, onSelect, idleHub, focusHub
             animate={{ opacity: dim ? 0.62 : 1, scale: 1, x: pop[0], y: pop[1] }}
             transition={{ type: 'spring', stiffness: 300, damping: 26, opacity: { duration: 0.2 } }}
           >
+            <title>{seg.label}</title>
             {isSel && <path d={sectorPath(a0, a1, R_OUT + 2, R_OUT + 7)} fill={color} filter="url(#kit-glow)" aria-hidden />}
             <path
               className="seg"
@@ -257,12 +258,12 @@ export function RingMap({ segments, links, selected, onSelect, idleHub, focusHub
               strokeOpacity={isSel ? 0.9 : isHover ? 0.6 : 0.32}
               strokeWidth={isSel ? 1.6 : 1}
             />
-            <g transform={`translate(${cx - 12} ${cy - 34})`} aria-hidden>
+            <g transform={`translate(${cx - 12} ${cy - 24})`} aria-hidden>
               <Icon width={24} height={24} color={color} strokeWidth={1.75} />
             </g>
             <text
               x={cx}
-              y={cy + 6}
+              y={cy + 16}
               textAnchor="middle"
               dominantBaseline="middle"
               className="font-display"
@@ -273,11 +274,6 @@ export function RingMap({ segments, links, selected, onSelect, idleHub, focusHub
             >
               {seg.short}
             </text>
-            {seg.subtitle && (
-              <text x={cx} y={cy + 23} textAnchor="middle" dominantBaseline="middle" className="font-mono" fontSize={9.5} fill="#7d837d" aria-hidden>
-                {seg.subtitle.length > 22 ? `${seg.subtitle.slice(0, 21)}…` : seg.subtitle}
-              </text>
-            )}
             <text x={nx} y={ny} textAnchor="middle" dominantBaseline="middle" className="font-mono" fontSize={10} fill={isSel ? color : '#525252'} aria-hidden>
               {pad2(i + 1)}
             </text>
