@@ -46,7 +46,7 @@ steps, and jumps straight to the match.
 - **Lucide React** icons
 - **Zustand** for the little global UI state there is
 - **React Router 6** with `BrowserRouter` and a GitHub Pages 404 fallback
-- Fonts self-hosted via Fontsource: **Inter Tight** (display, matching umbrasec.dev), **IBM Plex Sans** (body), **JetBrains Mono** (data)
+- Fonts self-hosted via Fontsource: **Inter Tight** (display and body, matching umbrasec.dev), **JetBrains Mono** (data)
 
 No backend, no runtime API calls, no external UI component library.
 

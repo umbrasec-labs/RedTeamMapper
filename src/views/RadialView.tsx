@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { ArrowRight, Workflow } from 'lucide-react';
 import { flows, flowsForPhase, phaseById, phases, phaseTopics, sectionById } from '@/data';
@@ -147,17 +147,22 @@ export default function RadialView() {
         label={active ? `${active.label} phase details` : 'Phase details'}
         contentKey={active?.id ?? 'none'}
       >
-        {active && <PhasePanel id={active.id} />}
+        {active && <PhasePanel key={active.id} id={active.id} />}
       </DetailPanel>
     </div>
   );
 }
 
+/** Related chains listed before "Show all"; busy phases appear in a dozen or more. */
+const RELATED_SHOWN = 6;
+
 function PhasePanel({ id }: { id: string }) {
   const phase = phaseById[id];
   const c = hueClass[phase.hue];
   const Icon = icons[phase.icon];
-  const related = flowsForPhase(phase).slice(0, 6);
+  const [showAll, setShowAll] = useState(false);
+  const allRelated = flowsForPhase(phase);
+  const related = showAll ? allRelated : allRelated.slice(0, RELATED_SHOWN);
   return (
     <div>
       <div className="flex items-center gap-3">
@@ -196,8 +201,8 @@ function PhasePanel({ id }: { id: string }) {
 
       {related.length > 0 && (
         <>
-          <h4 className="eyebrow mt-5 mb-2">Related flow chains</h4>
-          <ul className="space-y-1">
+          <h4 className="eyebrow mt-5 mb-2">Related flow chains · {allRelated.length}</h4>
+          <ul id="related-chains" className="space-y-1">
             {related.map((f) => (
               <li key={f.id}>
                 <Link to={`/flows/${f.id}`} className="flex items-center gap-1.5 text-[13px] text-fog hover:text-ember">
@@ -206,6 +211,17 @@ function PhasePanel({ id }: { id: string }) {
               </li>
             ))}
           </ul>
+          {allRelated.length > RELATED_SHOWN && (
+            <button
+              type="button"
+              onClick={() => setShowAll((v) => !v)}
+              aria-expanded={showAll}
+              aria-controls="related-chains"
+              className="mt-2 font-mono text-2xs uppercase tracking-wider text-fog-muted transition hover:text-ember"
+            >
+              {showAll ? 'Show fewer' : `Show all ${allRelated.length}`}
+            </button>
+          )}
         </>
       )}
     </div>

@@ -35,7 +35,7 @@ export default {
       },
       fontFamily: {
         display: ['"Inter Tight"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        sans: ['"IBM Plex Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['"Inter Tight"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       fontSize: {
