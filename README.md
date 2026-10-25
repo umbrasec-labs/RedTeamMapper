@@ -23,7 +23,7 @@ them. Use it only where you have explicit permission to test.
 | --- | --- | --- |
 | `/` · `/?phase=:id` | **Lifecycle Map** | A radial ring of the 7 operation phases (Infrastructure → Initial Access → Execution → Defense Evasion → Privilege & Movement → Collection → Exfiltration & Impact). Select a phase to open a panel listing its reference sections and related flow chains. |
 | `/sections/:id?card=` | **Section reader** | Each v3 reference section as an expandable card grid, with callouts, code blocks and prev/next navigation. Content is preserved from the original page and modelled as cards. |
-| `/flows` · `/flows/:id` | **Flow Chains** | Every end-to-end operation chain as a `node → node → node` sequence, with the transition named on each arrow. Deep-links scroll to a chain. |
+| `/flows` · `/flows/:id?step=` | **Flow Chains** | One operation chain at a time as an interactive node graph, with the transition named on each edge. Chain tabs switch chains, a numbered step list mirrors the graph, and selecting a step opens a detail panel with its path and phase reference. `/flows` opens the first chain. |
 | `/about` | **About** | What the mapper is and the terms of use. |
 
 **Global search** (`⌘K`, `Ctrl+K` or `/`) covers sections, individual reference cards, flow chains and flow
@@ -34,7 +34,8 @@ steps, and jumps straight to the match.
 | Keys | Action |
 | --- | --- |
 | `⌘K` / `Ctrl+K` / `/` | Open search; `↑` `↓` to move, `↵` to open |
-| `Esc` | Close search |
+| `Esc` | Close search, or the open phase or flow-step panel |
+| `1`-`7`, `←` `→` | On the map: pick a phase, cycle phases |
 | `g` then `o` `f` `a` | Go to the map, flows, about |
 
 ## Tech Stack
@@ -42,13 +43,14 @@ steps, and jumps straight to the match.
 - **Vite + React 18 + TypeScript** (strict)
 - **Tailwind CSS 3** with a custom charcoal / orange theme (`tailwind.config.js`)
 - **Framer Motion** for the search and drawer transitions (respects `prefers-reduced-motion`)
+- **React Flow** (`@xyflow/react` 12) for the flow-chain node graphs (`src/kit/FlowGraph.tsx`)
 - **Fuse.js** for client-side fuzzy search
 - **Lucide React** icons
 - **Zustand** for the little global UI state there is
-- **React Router 6** with `BrowserRouter` and a GitHub Pages 404 fallback
+- **React Router 7** with `BrowserRouter` and a GitHub Pages 404 fallback
 - Fonts self-hosted via Fontsource: **Inter Tight** (display and body, matching umbrasec.dev), **JetBrains Mono** (data)
 
-No backend, no runtime API calls, no external UI component library.
+No backend, no runtime API calls, no UI component kit beyond React Flow for the graphs.
 
 ## Content extraction
 
@@ -110,7 +112,8 @@ The router's `basename` follows `import.meta.env.BASE_URL`, so nothing else need
 
 GitHub Pages has no SPA rewrites, so a deep link such as `/RedTeamMapper/flows/phishing` would normally 404.
 The build emits a `404.html` (see `githubPagesSpaFallback` in `vite.config.ts`) that encodes the path into
-the query string and redirects to the app root; a small inline script in `index.html` restores the real URL.
+the query string and redirects to the app root; `public/spa-restore.js`, loaded by `index.html`, restores the real URL
+(an external script, because the CSP allows only `'self'` scripts).
 
 ## License
 
