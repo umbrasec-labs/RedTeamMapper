@@ -60,7 +60,7 @@ export const SectionCard = forwardRef<
               {card.items.map((item, i) => (
                 <li key={i} className="text-[13px] leading-relaxed">
                   {item.lead && <span className="font-semibold text-fog-bright">{item.lead}</span>}
-                  {item.lead && item.text && <span className="text-fog-muted"> — </span>}
+                  {item.lead && item.text && <span className="text-fog-muted"> - </span>}
                   <RichText text={item.text} />
                 </li>
               ))}
