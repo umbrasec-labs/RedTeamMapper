@@ -5,7 +5,7 @@ import { flows, flowsForPhase, phaseById, phases, phaseTopics, sectionById } fro
 import { hueClass } from '@/lib/hues';
 import { icons } from '@/lib/icons';
 import { isTyping, useKeydown } from '@/lib/useKeyboard';
-import { RingMap } from '@/kit/RingMap';
+import { RingMap, type RingLink } from '@/kit/RingMap';
 import { SegmentCard } from '@/kit/Cards';
 import { DetailPanel } from '@/kit/DetailPanel';
 
@@ -21,6 +21,14 @@ const segments = phases.map((p) => ({
   icon: icons[p.icon],
   hue: p.hue,
 }));
+
+// Flow arrows run to the next phase; feedback loops are where an operation falls back a phase.
+const links: RingLink[] = [
+  ...phases.map((p, i) => ({ from: p.id, to: phases[(i + 1) % phases.length].id, kind: 'flow' as const })),
+  { from: 'evade', to: 'infra', label: 'Burned infra', kind: 'feedback' },
+  { from: 'lateral', to: 'exec', label: 'New foothold', kind: 'feedback' },
+  { from: 'collect', to: 'lateral', label: 'Need more access', kind: 'feedback' },
+];
 
 /** Landing view: the radial operation lifecycle, with a panel for the selected phase. */
 export default function RadialView() {
@@ -87,6 +95,7 @@ export default function RadialView() {
         <div className="flex flex-col items-center py-2">
           <RingMap
             segments={segments}
+            links={links}
             selected={activeId}
             onSelect={select}
             idleHub={{
@@ -102,6 +111,12 @@ export default function RadialView() {
                 <line x1="0" y1="3" x2="28" y2="3" stroke="#f25623" strokeWidth="2" />
               </svg>
               Flow to next phase
+            </div>
+            <div className="flex items-center gap-2">
+              <svg width="28" height="6" aria-hidden>
+                <line x1="0" y1="3" x2="28" y2="3" stroke="#5fb3a1" strokeWidth="2" strokeDasharray="3 4" />
+              </svg>
+              Feedback loop
             </div>
             <div>
               <kbd className="kbd">1</kbd>-<kbd className="kbd">7</kbd> select · <kbd className="kbd">←</kbd>

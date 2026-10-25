@@ -21,7 +21,7 @@ them. Use it only where you have explicit permission to test.
 
 | Route | View | What it does |
 | --- | --- | --- |
-| `/` · `/?phase=:id` | **Lifecycle Map** | A radial ring of the 7 operation phases (Infrastructure → Initial Access → Execution → Stealth & Impairment → Privilege & Movement → Collection → Exfiltration & Impact). Select a phase to open a panel listing its reference sections and related flow chains. |
+| `/` · `/?phase=:id` | **Lifecycle Map** | A radial ring of the 7 operation phases (Infrastructure → Initial Access → Execution → Stealth & Impairment → Privilege & Movement → Collection → Exfiltration & Impact), with flow arrows to the next phase and three feedback loops where an operation falls back (burned infrastructure, a new foothold, more access needed). Select a phase to open a panel listing its reference sections and related flow chains. |
 | `/sections/:id?card=` | **Section reader** | Each v3 reference section as an expandable card grid, with callouts, code blocks and prev/next navigation. Content is preserved from the original page and modelled as cards. |
 | `/flows` · `/flows/:id?step=` | **Flow Chains** | One operation chain at a time as an interactive node graph, with the transition named on each edge. Chain tabs switch chains, a numbered step list mirrors the graph, and selecting a step opens a detail panel with its path and phase reference. `/flows` opens the first chain. |
 | `/about` | **About** | What the mapper is and the terms of use. |
