@@ -78,6 +78,13 @@ function arcPath(r: number, a0: number, a1: number, clockwise: boolean) {
   return `M${x0} ${y0} A${r} ${r} 0 ${large} ${sweep} ${x1} ${y1}`;
 }
 
+/** Keep a w by h label box centered at x,y inside the viewBox, so a label near the edge is not clipped. */
+function clampLabel([x, y]: [number, number], w: number, h: number): [number, number] {
+  const mx = VIEW - 4 - w / 2;
+  const my = VIEW - 4 - h / 2;
+  return [Math.max(-mx, Math.min(mx, x)), Math.max(-my, Math.min(my, y))];
+}
+
 const pad2 = (n: number) => String(n).padStart(2, '0');
 
 /**
@@ -285,9 +292,10 @@ export function RingMap({ segments, links, selected, onSelect, idleHub, focusHub
       <g aria-hidden pointerEvents="none">
         {geometry
           .filter(({ link }) => link.label && isActive(link))
-          .map(({ link, labelAt: [x, y] }) => {
+          .map(({ link, labelAt }) => {
             const feedback = link.kind === 'feedback';
             const w = link.label!.length * 6 + 16;
+            const [x, y] = clampLabel(labelAt, w, 20);
             return (
               <motion.g key={`label-${link.kind}-${link.from}-${link.to}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transform={`translate(${x} ${y})`}>
                 <rect x={-w / 2} y={-10} width={w} height={20} rx={10} fill="#141414" stroke={feedback ? '#5fb3a1' : '#f25623'} strokeOpacity={0.6} />
