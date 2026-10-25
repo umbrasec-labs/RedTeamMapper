@@ -860,7 +860,7 @@
   {
     "id": "evasion",
     "eyebrow": "Initial Breach",
-    "title": "// Defense Evasion",
+    "title": "// Stealth & Impairment",
     "description": "Modern EDRs hook userland APIs, scan memory, inspect call stacks, and correlate telemetry. Every technique here addresses a specific detection mechanism.",
     "callouts": [
       {
