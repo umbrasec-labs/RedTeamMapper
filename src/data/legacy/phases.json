@@ -43,7 +43,7 @@
   {
     "id": "evade",
     "order": 4,
-    "label": "Defense Evasion",
+    "label": "Stealth & Impairment",
     "short": "Evade",
     "icon": "ghost",
     "hue": "mauve",

@@ -2,7 +2,7 @@
 """Carry the v3 Red Team Mapper page into typed data for the v4 app.
 
 Mechanical transform: it reads legacy/index.html and models its content without
-rewriting any of it. It emits
+rewriting any of it, except the section titles in TITLE_OVERRIDES. It emits
 
   src/data/legacy/sections.json   per section: callouts, cards and code blocks
   src/data/legacy/flows.json      operation flow chains as step sequences
@@ -126,6 +126,14 @@ def parse_code(body: str) -> list[dict]:
 # ------------------------------------------------------------------ #
 # Sections
 # ------------------------------------------------------------------ #
+# Section titles that deliberately differ from legacy/index.html, which stays
+# verbatim. ATT&CK v19 split Defense Evasion into Stealth (TA0005) and Defense
+# Impairment (TA0112), so the evasion section follows its phase label.
+TITLE_OVERRIDES = {
+    "evasion": "// Stealth & Impairment",
+}
+
+
 def extract_sections(doc: str, group_of: dict[str, str]) -> list[dict]:
     out = []
     for m in re.finditer(r'<div class="section" id="([a-z0-9-]+)"\s*>', doc):
@@ -142,7 +150,7 @@ def extract_sections(doc: str, group_of: dict[str, str]) -> list[dict]:
         out.append({
             "id": sid,
             "eyebrow": group_of.get(sid, "Reference"),
-            "title": title or sid,
+            "title": TITLE_OVERRIDES.get(sid, title or sid),
             "description": desc,
             "callouts": parse_callouts(body),
             "cards": parse_cards(body),
@@ -204,7 +212,7 @@ PHASES = [
      "sections": ["access", "social", "motw", "payload"]},
     {"id": "exec", "order": 3, "label": "Execution", "short": "Exec", "icon": "cpu", "hue": "gold",
      "sections": ["inject", "evasion", "persist"]},
-    {"id": "evade", "order": 4, "label": "Defense Evasion", "short": "Evade", "icon": "ghost", "hue": "mauve",
+    {"id": "evade", "order": 4, "label": "Stealth & Impairment", "short": "Evade", "icon": "ghost", "hue": "mauve",
      "sections": ["evasion", "opsec"]},
     {"id": "lateral", "order": 5, "label": "Privilege & Movement", "short": "Lateral", "icon": "git", "hue": "teal",
      "sections": ["privesc", "cred", "lateral", "ad"]},
