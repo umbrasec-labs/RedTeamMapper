@@ -114,7 +114,7 @@ export default function RadialView() {
             </div>
             <div className="flex items-center gap-2">
               <svg width="28" height="6" aria-hidden>
-                <line x1="0" y1="3" x2="28" y2="3" stroke="#5fb3a1" strokeWidth="2" strokeDasharray="3 4" />
+                <line x1="0" y1="3" x2="28" y2="3" stroke="#5fb3a1" strokeWidth="2" strokeLinecap="round" strokeDasharray="3 6" />
               </svg>
               Feedback loop
             </div>
