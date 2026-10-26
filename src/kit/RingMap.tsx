@@ -206,8 +206,10 @@ export function RingMap({ segments, links, selected, onSelect, idleHub, focusHub
                 strokeLinecap="round"
                 markerEnd={`url(#${marker})`}
                 strokeDasharray={feedback ? '3 6' : undefined}
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 1 }}
+                // Animating pathLength makes framer-motion write its own stroke-dasharray,
+                // which would wipe out the feedback dash, so feedback arcs only fade in.
+                initial={feedback ? { opacity: 0 } : { pathLength: 0, opacity: 0 }}
+                animate={feedback ? { opacity: 1 } : { pathLength: 1, opacity: 1 }}
                 transition={{ duration: 0.9, delay: 0.25, ease: 'easeOut' }}
               />
               {active && !feedback && (
