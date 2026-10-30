@@ -94,7 +94,7 @@ The build output in `dist/` is a plain static site.
 
 1. In the repository, open **Settings → Pages → Build and deployment** and set **Source** to **GitHub Actions**.
    (v3 was served straight from the branch, so this switch is required once.)
-2. Push to `main`. The workflow runs `npm ci && npm run build` and publishes `dist/`.
+2. Push to `main`. The workflow runs `npm ci && npm run build`, scans `dist/` with a sha256-checked gitleaks 8.30.1 (a hit blocks the deploy), and publishes `dist/`.
 
 ### Base path
 
@@ -110,7 +110,7 @@ The router's `basename` follows `import.meta.env.BASE_URL`, so nothing else need
 
 ### Client-side routes on Pages
 
-GitHub Pages has no SPA rewrites, so a deep link such as `/RedTeamMapper/flows/phishing` would normally 404.
+GitHub Pages has no SPA rewrites, so a deep link such as `/RedTeamMapper/flows/lateral-movement-pivot-exfil` would normally 404.
 The build emits a `404.html` (see `githubPagesSpaFallback` in `vite.config.ts`) that encodes the path into
 the query string and redirects to the app root; `public/spa-restore.js`, loaded by `index.html`, restores the real URL
 (an external script, because the CSP allows only `'self'` scripts).

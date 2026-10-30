@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 const base = process.env.VITE_BASE ?? '/RedTeamMapper/';
 
 /**
- * GitHub Pages has no SPA rewrites, so a deep link like /RedTeamMapper/flows/phishing
+ * GitHub Pages has no SPA rewrites, so a deep link like /RedTeamMapper/flows/lateral-movement-pivot-exfil
  * hits a 404. This emits a 404.html that encodes the path into the query string and
  * redirects to the app root; public/spa-restore.js, loaded by index.html, restores the real URL.
  * (Technique from rafgraph/spa-github-pages.)
