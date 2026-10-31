@@ -18,7 +18,6 @@ keywords = ["@"]
 regexTarget = "match"
 regexes = [
   '''@umbrasec\.(dev|com)$''',
-  '''@noreply\.codeberg\.org$''',
   '''@users\.noreply\.github\.com$''',
   '''@(example|domain)\.(com|org|net)$''',
   '''\.(tld|test|example|invalid)$''',  # placeholder hosts in attack examples
