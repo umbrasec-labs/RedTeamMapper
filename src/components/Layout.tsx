@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Command, Menu, Search } from 'lucide-react';
 import { useUi } from '@/store/ui';
@@ -25,6 +25,11 @@ export function Layout() {
     if (m) return sectionById[m[1]]?.title ?? 'Reference Section';
     return 'Red Team Mapper';
   })();
+
+  // The tab, history and screen readers get the page name, not just the header.
+  useEffect(() => {
+    document.title = title === 'Red Team Mapper' ? title : `${title} - Red Team Mapper`;
+  }, [title]);
 
   useKeydown(
     (e) => {
